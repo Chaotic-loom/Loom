@@ -1,5 +1,6 @@
 package com.chaotic_loom.loom.platform;
 
+import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -22,5 +23,13 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public boolean isDevelopmentEnvironment() {
 
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public String getModVersion() {
+        return ModList.get()
+                .getModContainerById(Constants.MOD_ID)
+                .map(container -> container.getModInfo().getVersion().toString())
+                .orElse("UNKNOWN");
     }
 }

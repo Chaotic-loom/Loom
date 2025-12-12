@@ -5,6 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "${mixin_java_version}",
   "mixins": [
+    "commands.CommandsMixin",
     "events.LevelChunkMixin",
     "events.LivingEntityMixin",
     "events.MinecraftServerMixin",
