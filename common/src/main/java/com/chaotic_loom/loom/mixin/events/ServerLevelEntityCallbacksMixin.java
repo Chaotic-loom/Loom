@@ -1,6 +1,7 @@
 package com.chaotic_loom.loom.mixin.events;
 
 import com.chaotic_loom.loom.builtin.events.ServerEvents;
+import com.chaotic_loom.loom.core.events.EventResult;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Final;
@@ -14,13 +15,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerLevelEntityCallbacksMixin {
     @Shadow @Final private ServerLevel this$0;
 
-    @Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
+    @Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
     private void invokeEntityLoadEvent(Entity entity, CallbackInfo ci) {
-        ServerEvents.ENTITY_LOAD.invoker().onEvent(this.this$0, entity);
+        if (ServerEvents.ENTITY_LOAD.invoker().onEvent(this.this$0, entity) == EventResult.CANCEL) {
+            ci.cancel();
+        }
     }
 
-    @Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"))
-    private void invokeEntityUnloadEvent(Entity entity, CallbackInfo info) {
-        ServerEvents.ENTITY_UNLOAD.invoker().onEvent(this.this$0, entity);
+    @Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
+    private void invokeEntityUnloadEvent(Entity entity, CallbackInfo ci) {
+        if (ServerEvents.ENTITY_UNLOAD.invoker().onEvent(this.this$0, entity) == EventResult.CANCEL) {
+            ci.cancel();
+        }
     }
 }
