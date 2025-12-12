@@ -1,0 +1,24 @@
+plugins {
+    // fabric
+    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+
+    // neoforged moddev (for >=1.20.2)
+    id 'net.neoforged.moddev' version '2.0.115' apply false
+
+    // legacy neoforge/forge + sponge (for <1.20.2)
+    id 'net.neoforged.moddev.legacyforge' version '2.0.77' apply false
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT' apply false
+}
+
+ext.compareVersions = { String a, String b ->
+    def sa = a.replaceAll('[^0-9.]','')
+    def sb = b.replaceAll('[^0-9.]','')
+    def pa = sa.tokenize('.').collect{ it.toInteger() }
+    def pb = sb.tokenize('.').collect{ it.toInteger() }
+    for (int i = 0; i < Math.max(pa.size(), pb.size()); i++) {
+        int va = (i < pa.size()) ? pa[i] : 0
+        int vb = (i < pb.size()) ? pb[i] : 0
+        if (va != vb) return va < vb ? -1 : 1
+    }
+    return 0
+}
