@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.chaotic_loom.loom.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "${mixin_java_version}",
+  "mixins": [
+    "events.LevelChunkMixin",
+    "events.LivingEntityMixin",
+    "events.MinecraftServerMixin",
+    "events.PlayerListMixin",
+    "events.ServerLevelEntityCallbacksMixin",
+    "events.ServerLevelMixin",
+    "events.ServerPlayerMixin"
+  ],
+  "client": [
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+
