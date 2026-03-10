@@ -47,6 +47,7 @@ public final class ShaderRegistry {
         // Auto-subscribe so callers never need to wire up the reload hook manually.
         // The platform bridge fires ShaderRegistrationCallback.EVENT; we respond
         // by building every registered ShaderProgram into the pair list.
+        LOGGER.info("[ShaderRegistry] Initializing ShaderRegistry and subscribing to ShaderRegistrationCallback");
         ShaderRegistrationCallback.EVENT.register(this::registerAll);
     }
 
@@ -65,6 +66,7 @@ public final class ShaderRegistry {
      * @return the same {@code program} for chaining
      */
     public ShaderProgram add(ShaderProgram program) {
+        LOGGER.info("[ShaderRegistry] Registering shader program: {}", program.getLocation());
         ShaderProgram previous = registry.put(program.getLocation(), program);
         if (previous != null && previous != program) {
             LOGGER.warn("[ShaderRegistry] Replacing existing program '{}' — was this intentional?",
@@ -107,17 +109,21 @@ public final class ShaderRegistry {
      */
     public void registerAll(ResourceProvider provider,
                             List<Pair<ShaderInstance, Consumer<ShaderInstance>>> pairList) {
+        LOGGER.info("[ShaderRegistry] registerAll called! Registry has {} shaders", registry.size());
         for (ShaderProgram program : registry.values()) {
             try {
+                LOGGER.info("[ShaderRegistry] Building shader instance for: {}", program.getLocation());
                 pairList.add(Pair.of(
                         program.buildInstance(provider),
                         program::onReload
                 ));
+                LOGGER.info("[ShaderRegistry] Successfully built shader: {}", program.getLocation());
             } catch (IOException e) {
                 LOGGER.error("[ShaderRegistry] Failed to build shader '{}': {}",
                         program.getLocation(), e.getMessage(), e);
             }
         }
+        LOGGER.info("[ShaderRegistry] Finished registering all shaders");
     }
 
     // -------------------------------------------------------------------------

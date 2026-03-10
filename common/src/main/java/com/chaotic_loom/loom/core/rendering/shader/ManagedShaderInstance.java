@@ -1,5 +1,6 @@
 package com.chaotic_loom.loom.core.rendering.shader;
 
+import com.chaotic_loom.loom.Constants;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.shaders.Uniform;
@@ -42,6 +43,8 @@ public final class ManagedShaderInstance extends ShaderInstance {
                           VertexFormat format,
                           ShaderProgram owner) throws IOException {
         super(provider, location.toString(), format);
+        System.out.println("HERE_HERE_HERE_HERE_HERE_HERE_HERE_HERE_HERE");
+        System.out.println(owner);
         this.owner = owner;
     }
 

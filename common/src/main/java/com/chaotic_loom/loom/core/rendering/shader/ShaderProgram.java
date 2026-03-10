@@ -1,5 +1,6 @@
 package com.chaotic_loom.loom.core.rendering.shader;
 
+import com.chaotic_loom.loom.Constants;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -99,8 +100,10 @@ public final class ShaderProgram {
      * Called by {@link ShaderRegistry} during resource loading.
      */
     ManagedShaderInstance buildInstance(ResourceProvider provider) throws IOException {
+        Constants.LOG.info("[ShaderProgram] Building instance for: {}", location);
         ManagedShaderInstance built = new ManagedShaderInstance(provider, location, vertexFormat, this);
         this.instance = built;
+        Constants.LOG.info("[ShaderProgram] Instance built successfully for: {}", location);
         return built;
     }
 

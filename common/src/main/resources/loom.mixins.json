@@ -12,7 +12,8 @@
     "events.PlayerListMixin",
     "events.ServerLevelEntityCallbacksMixin",
     "events.ServerLevelMixin",
-    "events.ServerPlayerMixin"
+    "events.ServerPlayerMixin",
+    "natives.NarratorMixin"
   ],
   "client": [
     "rendering.GameRendererMixin",

@@ -35,6 +35,7 @@ package com.chaotic_loom.loom.builtin.shaders;
  * so its static TINT field registers with ShaderRegistry before reload fires.
  */
 
+import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.core.rendering.shader.ManagedShaderInstance;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderProgram;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderRegistry;
@@ -104,7 +105,7 @@ public final class BuiltinTestShader {
      */
     public static void init() {
         // Static fields above run on first class load. Nothing else needed.
-        System.out.println("Yippie, java is so wholesome sometimes!");
+        Constants.LOG.info("Built-in test shader init method called.");
     }
 
     /**
@@ -204,13 +205,9 @@ public final class BuiltinTestShader {
     public static void renderOverlay(GuiGraphics guiGraphics) {
         if (!enabled) return;
 
-        System.out.println("Enabled");
-
         // getInstance() returns null before the first resource reload.
         ManagedShaderInstance shader = TINT.getInstance();
         if (shader == null) return;
-
-        System.out.println("Shader is here");
 
         // ------------------------------------------------------------------
         // Step 1: Set per-frame uniform values.
@@ -268,8 +265,6 @@ public final class BuiltinTestShader {
         BufferUploader.drawWithShader(buffer.end());
 
         RenderSystem.disableBlend();
-
-        System.out.println("yay, overlay");
 
         // ------------------------------------------------------------------
         // Step 3: Restore uniform defaults.

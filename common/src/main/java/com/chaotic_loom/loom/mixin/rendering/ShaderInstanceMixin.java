@@ -92,7 +92,7 @@ public abstract class ShaderInstanceMixin {
     )
     private void onParseUniformNode(JsonElement jsonElement, CallbackInfo ci) {
         if ((Object) this instanceof ManagedShaderInstance managed) {
-            managed.captureUniform(jsonElement);
+            //managed.captureUniform(jsonElement);
         }
     }
 }

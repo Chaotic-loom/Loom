@@ -1,5 +1,6 @@
 package com.chaotic_loom.loom.core.rendering.shader;
 
+import com.chaotic_loom.loom.Constants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
@@ -111,14 +112,16 @@ public final class ShaderRegistrationCallback {
      */
     public void invoke(ResourceProvider provider,
                        List<Pair<ShaderInstance, Consumer<ShaderInstance>>> pairList) {
+        Constants.LOG.info("[ShaderRegistrationCallback] invoke called with {} handlers registered", handlers.size());
         for (Handler handler : handlers) {
             try {
+                Constants.LOG.info("[ShaderRegistrationCallback] Calling handler: {}", handler);
                 handler.onRegisterShaders(provider, pairList);
             } catch (Exception e) {
-                org.slf4j.LoggerFactory.getLogger(ShaderRegistrationCallback.class)
-                        .error("[ShaderRegistrationCallback] Handler '{}' threw an exception: {}",
+                Constants.LOG.error("[ShaderRegistrationCallback] Handler '{}' threw an exception: {}",
                                 handler, e.getMessage(), e);
             }
         }
+        Constants.LOG.info("[ShaderRegistrationCallback] invoke completed");
     }
 }

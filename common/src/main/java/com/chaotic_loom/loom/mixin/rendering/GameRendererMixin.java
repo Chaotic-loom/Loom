@@ -1,6 +1,8 @@
 package com.chaotic_loom.loom.mixin.rendering;
 
+import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderRegistrationCallback;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -11,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -54,24 +57,10 @@ import java.util.function.Consumer;
  */
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
-
-    @Inject(
-            method = "reloadShaders",
-            at = @At(
-                    value = "INVOKE",
-                    // Target the forEach call Minecraft uses to dispatch each
-                    // (ShaderInstance, Consumer) pair after the list is built.
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
-            ),
-            locals = LocalCapture.CAPTURE_FAILSOFT
-    )
-    private void onReloadShaders(
-            ResourceProvider provider,
-            CallbackInfo ci,
-            // Captured local: the pair list built earlier in the method body.
-            // Mixin matches this by type; no other List local exists at this point.
-            List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderList) {
-
-        ShaderRegistrationCallback.EVENT.invoke(provider, shaderList);
+    @Inject(method = "reloadShaders", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 0))
+    private void registerShaders(ResourceProvider resourceProvider, CallbackInfo ci, @Local(ordinal = 1) List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList) throws IOException {
+        Constants.LOG.info("[GameRendererMixin] reloadShaders called! Invoking ShaderRegistrationCallback");
+        ShaderRegistrationCallback.EVENT.invoke(resourceProvider, shaderPairList);
+        Constants.LOG.info("[GameRendererMixin] ShaderRegistrationCallback.invoke completed");
     }
 }
