@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  * {@link ShaderRegistrationCallback#EVENT} at the correct moment in Minecraft's
  * shader loading pipeline.
  *
- * <h3>Why this mixin instead of platform events</h3>
+ * <p><b>Why this mixin instead of platform events</b></p>
  * Both Fabric's {@code CoreShaderRegistrationCallback} and Forge's
  * {@code RegisterShadersEvent} are themselves wrappers around the same vanilla
  * code path — they inject here (or equivalent) and expose the list upward.
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
  * bridge classes. The entire shader system, including its entry point, lives in
  * the common module.
  *
- * <h3>Injection point</h3>
+ * <p><b>Injection point</b></p>
  * {@code reloadShaders} builds a {@code List<Pair<ShaderInstance,
  * Consumer<ShaderInstance>>>}, populates it with all vanilla shader pairs, and
  * then iterates it to call each consumer (handing the compiled instance back to
@@ -43,7 +43,7 @@ import java.util.function.Consumer;
  *       as vanilla shaders.</li>
  * </ol>
  *
- * <h3>Local capture order</h3>
+ * <p><b>Local capture order</b></p>
  * Mixin resolves captured locals by matching the declared parameter types against
  * the live local variable table at the injection point, in slot order. At the
  * {@code forEach} call site the only relevant local of a list type is the shader

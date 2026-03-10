@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 /**
  * Central registry for all {@link ShaderProgram}s in the mod.
  *
- * <h3>Lifecycle</h3>
+ * <p><b>Lifecycle</b></p>
  * <ol>
  *   <li><b>Mod init</b> — call {@link #register} to declare programs (no GPU
  *       resources allocated yet). The registry auto-subscribes to

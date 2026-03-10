@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * A loader-agnostic event fired whenever Minecraft is about to process its
  * shader pair list during a resource reload.
  *
- * <h3>How it fits into the system</h3>
+ * <p><b>How it fits into the system</b></p>
  * <pre>
  *   VANILLA (both loaders)
  *   ──────────────────────
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
  * <p>No platform API (Fabric, Forge, NeoForge) is involved anywhere in this
  * chain. The mixin targets vanilla {@code GameRenderer} directly.
  *
- * <h3>Registering a handler</h3>
+ * <p><b>Registering a handler</b></p>
  * <pre>{@code
  * ShaderRegistrationCallback.EVENT.register((provider, pairList) -> {
  *     // append Pair.of(instance, reloadConsumer) entries to pairList

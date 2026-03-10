@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.google.gson.JsonElement;
 
 /**
- * Patches {@link ShaderInstance#<init>} to fix the shader-JSON
+ * Patches {@code ShaderInstance} constructor to fix the shader-JSON
  * {@link net.minecraft.resources.ResourceLocation} for mod-namespaced shaders.
  *
- * <h3>The problem</h3>
+ * <p><b>The problem</b></p>
  * Inside {@code ShaderInstance.<init>}, Mojang builds the path to the shader
  * JSON like this (simplified):
  * <pre>
@@ -27,7 +27,7 @@ import com.google.gson.JsonElement;
  * an <em>invalid</em> ResourceLocation because colons are not allowed in the path
  * segment.
  *
- * <h3>The fix</h3>
+ * <p><b>The fix</b></p>
  * We intercept the {@code new ResourceLocation(String)} call and restructure the
  * string into the correct form: {@code "mymod:shaders/core/my_shader.json"}.
  *

@@ -104,6 +104,7 @@ public final class BuiltinTestShader {
      */
     public static void init() {
         // Static fields above run on first class load. Nothing else needed.
+        System.out.println("Yippie, java is so wholesome sometimes!");
     }
 
     /**
@@ -203,9 +204,13 @@ public final class BuiltinTestShader {
     public static void renderOverlay(GuiGraphics guiGraphics) {
         if (!enabled) return;
 
+        System.out.println("Enabled");
+
         // getInstance() returns null before the first resource reload.
         ManagedShaderInstance shader = TINT.getInstance();
         if (shader == null) return;
+
+        System.out.println("Shader is here");
 
         // ------------------------------------------------------------------
         // Step 1: Set per-frame uniform values.
@@ -263,6 +268,8 @@ public final class BuiltinTestShader {
         BufferUploader.drawWithShader(buffer.end());
 
         RenderSystem.disableBlend();
+
+        System.out.println("yay, overlay");
 
         // ------------------------------------------------------------------
         // Step 3: Restore uniform defaults.

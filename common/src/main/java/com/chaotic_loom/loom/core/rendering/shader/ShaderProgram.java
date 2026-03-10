@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 /**
  * Describes a custom shader and owns its live {@link ManagedShaderInstance}.
  *
- * <h3>Usage</h3>
+ * <p><b>Usage</b></p>
  * <pre>{@code
  * // 1. Declare at mod-init time (no GPU resources yet)
  * ShaderProgram MY_SHADER = ShaderProgram.builder(
