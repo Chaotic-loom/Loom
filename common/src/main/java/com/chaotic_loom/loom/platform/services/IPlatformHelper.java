@@ -36,7 +36,15 @@ public interface IPlatformHelper {
 
     /**
      * Gets the mod's current version string.
+     * 
      * @return The version string.
      */
     String getModVersion();
+
+    /**
+     * Checks if the current environment is a client.
+     * 
+     * @return True if client, false otherwise.
+     */
+    boolean isClient();
 }

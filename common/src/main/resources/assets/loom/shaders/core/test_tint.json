@@ -1,0 +1,66 @@
+{
+  "_comment": [
+    "Loom built-in test shader — test_tint",
+    "",
+    "Renders a fullscreen translucent colour overlay on top of the HUD.",
+    "This shader exists purely as a working example of Loom's shader system.",
+    "",
+    "Uniforms:",
+    "  ModelViewMat  — set automatically by RenderSystem",
+    "  ProjMat       — set automatically by RenderSystem",
+    "  Tint          — vec4 RGBA tint colour, set per-frame by BuiltinTestShader",
+    "  Intensity     — float alpha multiplier, set per-frame by BuiltinTestShader",
+    "",
+    "The 'values' arrays below are the DEFAULT values snapshotted by",
+    "ManagedShaderInstance at load time. BuiltinTestShader.restoreUniformDefaults()",
+    "resets Tint and Intensity back to these values after each draw call."
+  ],
+
+  "blend": {
+    "func":   "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+
+  "vertex":   "loom:test_tint",
+  "fragment": "loom:test_tint",
+
+  "attributes": [
+    "Position"
+  ],
+
+  "uniforms": [
+    {
+      "name":   "ModelViewMat",
+      "type":   "matrix4x4",
+      "count":  16,
+      "values": [ 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1 ]
+    },
+    {
+      "name":   "ProjMat",
+      "type":   "matrix4x4",
+      "count":  16,
+      "values": [ 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1 ]
+    },
+    {
+      "_comment": "Default: semi-transparent red. Java code overrides this each frame.",
+      "name":   "Tint",
+      "type":   "float",
+      "count":  4,
+      "values": [ 1.0, 0.0, 0.0, 0.4 ]
+    },
+    {
+      "_comment": "Default: full intensity. Java code overrides this each frame.",
+      "name":   "Intensity",
+      "type":   "float",
+      "count":  1,
+      "values": [ 1.0 ]
+    }
+  ]
+}

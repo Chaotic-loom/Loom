@@ -1,7 +1,9 @@
 package com.chaotic_loom.loom.core.commands;
 
 import com.chaotic_loom.loom.Constants;
+import com.chaotic_loom.loom.platform.Services;
 import com.chaotic_loom.loom.builtin.commands.HelpFunction;
+import com.chaotic_loom.loom.builtin.commands.ShaderFunction;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,6 +34,7 @@ public class CommandRegistry {
      * Registers a subfunction to a specific root command.
      * If the root doesn't exist yet, it is created automatically.
      * * @param rootCommand The main command name (e.g., "loom")
+     * 
      * @param function The subfunction to add (e.g., PrintFunction)
      */
     public static void registerFunction(String rootCommand, CommandFunction function) {
@@ -42,6 +45,10 @@ public class CommandRegistry {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         // Registers custom commands
         CommandRegistry.registerFunction(Constants.MOD_ID, new HelpFunction());
+
+        if (Services.PLATFORM.isClient()) {
+            CommandRegistry.registerFunction(Constants.MOD_ID, new ShaderFunction());
+        }
 
         // Register all Vanilla commands
         for (LiteralArgumentBuilder<CommandSourceStack> cmd : REGULAR_COMMANDS) {

@@ -1,2 +1,5 @@
 accessWidener	v1	named
 
+accessible method net/minecraft/client/renderer/ShaderInstance parseUniformNode (Lcom/google/gson/JsonElement;)V
+accessible field net/minecraft/client/renderer/ShaderInstance uniforms Ljava/util/List;
+accessible field net/minecraft/client/renderer/ShaderInstance uniformMap Ljava/util/Map;

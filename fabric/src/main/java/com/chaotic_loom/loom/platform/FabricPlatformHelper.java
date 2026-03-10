@@ -2,12 +2,18 @@ package com.chaotic_loom.loom.platform;
 
 import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.platform.services.IPlatformHelper;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 import java.util.Optional;
 
 public class FabricPlatformHelper implements IPlatformHelper {
+
+    @Override
+    public boolean isClient() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+    }
 
     @Override
     public String getPlatformName() {

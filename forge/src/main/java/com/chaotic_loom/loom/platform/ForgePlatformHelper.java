@@ -2,10 +2,16 @@ package com.chaotic_loom.loom.platform;
 
 import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.platform.services.IPlatformHelper;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 public class ForgePlatformHelper implements IPlatformHelper {
+
+    @Override
+    public boolean isClient() {
+        return FMLLoader.getDist() == Dist.CLIENT;
+    }
 
     @Override
     public String getPlatformName() {

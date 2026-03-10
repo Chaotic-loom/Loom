@@ -15,6 +15,9 @@
     "events.ServerPlayerMixin"
   ],
   "client": [
+    "rendering.GameRendererMixin",
+    "rendering.GuiMixin",
+    "rendering.ShaderInstanceMixin"
   ],
   "server": [],
   "injectors": {

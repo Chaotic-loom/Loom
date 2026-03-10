@@ -1,10 +1,17 @@
 package com.chaotic_loom.loom.platform;
 
+import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.platform.services.IPlatformHelper;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
+
+    @Override
+    public boolean isClient() {
+        return FMLLoader.getDist() == Dist.CLIENT;
+    }
 
     @Override
     public String getPlatformName() {
