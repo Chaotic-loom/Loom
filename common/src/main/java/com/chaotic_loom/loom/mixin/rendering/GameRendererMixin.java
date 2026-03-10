@@ -1,6 +1,8 @@
 package com.chaotic_loom.loom.mixin.rendering;
 
 import com.chaotic_loom.loom.Constants;
+import com.chaotic_loom.loom.core.imgui.DebugWindows;
+import com.chaotic_loom.loom.core.imgui.ImGuiManager;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderRegistrationCallback;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Pair;
@@ -62,5 +64,15 @@ public abstract class GameRendererMixin {
         Constants.LOG.info("[GameRendererMixin] reloadShaders called! Invoking ShaderRegistrationCallback");
         ShaderRegistrationCallback.EVENT.invoke(resourceProvider, shaderPairList);
         Constants.LOG.info("[GameRendererMixin] ShaderRegistrationCallback.invoke completed");
+    }
+
+    @Inject(
+            method = "render",
+            at = @At("RETURN")   // After Minecraft finishes the full frame
+    )
+    private void onRenderEnd(float partialTick, long nanoTime, boolean renderLevel, CallbackInfo ci) {
+        ImGuiManager.beginFrame();
+        DebugWindows.render();
+        ImGuiManager.endFrame();
     }
 }
