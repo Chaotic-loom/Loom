@@ -15,7 +15,7 @@ public class ImGuiManager {
     private static ImGuiImplGlfw imguiGlfw;
     private static ImGuiImplGl3  imguiGl3;
     private static boolean       initialized = false;
-    private static boolean       editorMode  = true;
+    private static boolean       editorMode  = false;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -64,7 +64,11 @@ public class ImGuiManager {
 
     public static void renderUI() {
         if (editorMode) {
-            EditorLayout.render();
+            if (Minecraft.getInstance().level == null) {
+                setEditorMode(false);
+            } else {
+                EditorLayout.render();
+            }
         }
         DebugWindows.render();
     }
