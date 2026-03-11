@@ -73,8 +73,7 @@ public abstract class GameRendererMixin {
     )
     private void onRenderEnd(float partialTick, long nanoTime, boolean renderLevel, CallbackInfo ci) {
         ImGuiManager.beginFrame();
-        EditorLayout.render();
-        DebugWindows.render();
+        ImGuiManager.renderUI();
         ImGuiManager.endFrame();
     }
 }

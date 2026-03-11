@@ -18,6 +18,7 @@
   "client": [
     "rendering.GameRendererMixin",
     "rendering.GuiMixin",
+    "rendering.MinecraftMixin",
     "rendering.ShaderInstanceMixin"
   ],
   "server": [],

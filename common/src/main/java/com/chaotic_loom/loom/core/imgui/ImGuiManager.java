@@ -8,6 +8,7 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.opengl.GL30;
 
 /**
  * Manages the ImGui lifecycle: init, per-frame begin/end, dispose.
@@ -27,9 +28,9 @@ public class ImGuiManager {
     private static ImGuiImplGlfw imguiGlfw;
     private static ImGuiImplGl3  imguiGl3;
     private static boolean       initialized = false;
-    private static boolean       editorMode  = false;
+    private static boolean       editorMode  = true;
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     public static void init() {
         if (initialized) return;
@@ -41,60 +42,53 @@ public class ImGuiManager {
         ImGuiIO io = ImGui.getIO();
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
-        io.setIniFilename(null);   // Disable layout persistence (managed by EditorLayout)
+        io.setIniFilename(null);
 
         imguiGlfw = new ImGuiImplGlfw();
         imguiGl3  = new ImGuiImplGl3();
 
-        // 'true' = install GLFW callbacks (handles mouse & keyboard)
         imguiGlfw.init(windowHandle, true);
         imguiGl3.init("#version 150");
 
-        // Apply theme before the first frame so no flash of unstyled UI
-        EditorLayout.applyEditorTheme();
+        EditorLayout.init();
 
         initialized = true;
     }
 
-    /** Call once when a world is loaded to finish editor setup */
-    public static void initEditor() {
-        if (!initialized) init();
-        EditorLayout.init();
-    }
+    // ── Per-frame API ─────────────────────────────────────────────────────────
 
-    // ── Per-frame API ─────────────────────────────────────────────────────
-
-    /** Call at the start of each frame, before any ImGui calls. */
     public static void beginFrame() {
         if (!initialized) init();
-
-        // Allow / block Minecraft input based on editor mode
         updateInputPassthrough();
-
         imguiGlfw.newFrame();
         imguiGl3.newFrame();
         ImGui.newFrame();
     }
 
-    /** Call after all your ImGui window calls. */
     public static void endFrame() {
         ImGui.render();
-        imguiGl3.renderDrawData(ImGui.getDrawData());
 
-        // Required when multi-viewport is enabled (optional, enable in io flags if needed)
-        // ImGui.updatePlatformWindows();
-        // ImGui.renderPlatformWindowsDefault();
+        // CRITICAL — unbind Minecraft's FBO before rendering ImGui.
+        //
+        // After the game renders, mainRenderTarget is still bound as the active
+        // GL framebuffer.  If renderDrawData() executes while it is bound, ImGui
+        // draws itself INTO the game texture.  The viewport panel then displays
+        // that texture, which contains ImGui, which displays the texture again —
+        // an infinite feedback loop that causes flickering, invalid colours, and
+        // a completely broken window.
+        //
+        // Binding framebuffer 0 (the real screen backbuffer) guarantees ImGui
+        // always composites onto the final output, never into any game FBO.
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+
+        imguiGl3.renderDrawData(ImGui.getDrawData());
     }
 
-    /**
-     * Render the appropriate UI for this frame.
-     * Call this between {@link #beginFrame()} and {@link #endFrame()}.
-     */
     public static void renderUI() {
         if (editorMode) {
             EditorLayout.render();
         }
-        DebugWindows.render();   // always-on lightweight overlay
+        DebugWindows.render();
     }
 
     public static void dispose() {
@@ -105,9 +99,8 @@ public class ImGuiManager {
         initialized = false;
     }
 
-    // ── Editor mode toggle ────────────────────────────────────────────────
+    // ── Editor mode ───────────────────────────────────────────────────────────
 
-    /** Toggle between full editor layout and normal play */
     public static void toggleEditorMode() {
         editorMode = !editorMode;
         ConsolePanel.info(editorMode ? "Editor mode ON" : "Editor mode OFF");
@@ -117,16 +110,11 @@ public class ImGuiManager {
     public static boolean isEditorMode()         { return editorMode; }
     public static boolean isInitialized()        { return initialized; }
 
-    // ── Input passthrough ─────────────────────────────────────────────────
+    // ── Input passthrough ─────────────────────────────────────────────────────
 
-    /**
-     * In editor mode: ImGui captures all input.
-     * In play mode: ImGui does NOT steal input from Minecraft.
-     */
     private static void updateInputPassthrough() {
         ImGuiIO io = ImGui.getIO();
         if (!editorMode) {
-            // Remove the flags so Minecraft gets all input
             io.setConfigFlags(io.getConfigFlags() & ~ImGuiConfigFlags.NavEnableKeyboard);
         } else {
             io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
