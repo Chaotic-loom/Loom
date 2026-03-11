@@ -13,9 +13,15 @@
     "events.ServerLevelEntityCallbacksMixin",
     "events.ServerLevelMixin",
     "events.ServerPlayerMixin",
-    "natives.NarratorMixin"
+    "experiments.LivingEntityMixin",
+    "experiments.ServerPlayerGameModeMixin",
+    "natives.NarratorMixin",
+    "nbt.EntityMixin",
+    "networking.ServerGamePacketListenerImplMixin"
   ],
   "client": [
+    "experiments.LocalPlayerMixin",
+    "networking.ClientPacketListenerMixin",
     "rendering.GameRendererMixin",
     "rendering.GuiMixin",
     "rendering.MinecraftMixin",

@@ -1,6 +1,7 @@
 package com.chaotic_loom.loom.core.commands;
 
 import com.chaotic_loom.loom.Constants;
+import com.chaotic_loom.loom.builtin.commands.EditorFunction;
 import com.chaotic_loom.loom.platform.Services;
 import com.chaotic_loom.loom.builtin.commands.HelpFunction;
 import com.chaotic_loom.loom.builtin.commands.ShaderFunction;
@@ -45,6 +46,7 @@ public class CommandRegistry {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         // Registers custom commands
         CommandRegistry.registerFunction(Constants.MOD_ID, new HelpFunction());
+        CommandRegistry.registerFunction(Constants.MOD_ID, new EditorFunction());
 
         if (Services.PLATFORM.isClient()) {
             CommandRegistry.registerFunction(Constants.MOD_ID, new ShaderFunction());

@@ -1,5 +1,6 @@
 package com.chaotic_loom.loom;
 
+import com.chaotic_loom.loom.builtin.packets.LoomBuiltInPackets;
 import com.chaotic_loom.loom.builtin.shaders.BuiltinTestShader;
 import com.chaotic_loom.loom.platform.Services;
 
@@ -13,6 +14,8 @@ public class CommonClass {
         Constants.LOG.info(" - Mod version: {}", Services.PLATFORM.getModVersion());
         Constants.LOG.info(" - Is dev env: {}", Services.PLATFORM.isDevelopmentEnvironment());
         Constants.LOG.info("────────────────────────────────────────────────────────────");
+
+        LoomBuiltInPackets.init();
 
         if (Services.PLATFORM.isClient()) {
             Constants.LOG.info("Starting client side logic...");
