@@ -59,9 +59,7 @@ dependencies {
     compileOnly 'com.google.auto.service:auto-service:1.0.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.0.1'
 
-    // Imgui test
-    def imgui_version = "1.88.0"
-
+    // Imgui
     api "io.github.spair:imgui-java-binding:$imgui_version"
     api("io.github.spair:imgui-java-lwjgl3:$imgui_version") {
         exclude group: 'org.lwjgl'

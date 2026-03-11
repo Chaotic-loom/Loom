@@ -3,6 +3,7 @@ package com.chaotic_loom.loom.mixin.rendering;
 import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.core.imgui.DebugWindows;
 import com.chaotic_loom.loom.core.imgui.ImGuiManager;
+import com.chaotic_loom.loom.core.imgui.editor.EditorLayout;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderRegistrationCallback;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Pair;
@@ -72,6 +73,7 @@ public abstract class GameRendererMixin {
     )
     private void onRenderEnd(float partialTick, long nanoTime, boolean renderLevel, CallbackInfo ci) {
         ImGuiManager.beginFrame();
+        EditorLayout.render();
         DebugWindows.render();
         ImGuiManager.endFrame();
     }

@@ -77,6 +77,17 @@ dependencies {
 
     // Forge's hack fix
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+
+    // Imgui
+    implementation "io.github.spair:imgui-java-binding:$imgui_version"
+    implementation("io.github.spair:imgui-java-lwjgl3:$imgui_version") {
+        exclude group: 'org.lwjgl'
+        exclude group: 'org.lwjgl.lwjgl'
+    }
+
+    runtimeOnly "io.github.spair:imgui-java-natives-linux:$imgui_version"
+    runtimeOnly("io.github.spair:imgui-java-natives-macos:$imgui_version")
+    runtimeOnly("io.github.spair:imgui-java-natives-windows:$imgui_version")
 }
 
 publishing {

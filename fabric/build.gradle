@@ -10,6 +10,17 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    // Imgui
+    include(api("io.github.spair:imgui-java-binding:$imgui_version"))
+    include(api("io.github.spair:imgui-java-lwjgl3:$imgui_version")) {
+        exclude group: 'org.lwjgl'
+        exclude group: 'org.lwjgl.lwjgl'
+    }
+
+    include(runtimeOnly("io.github.spair:imgui-java-natives-linux:$imgui_version"))
+    include(runtimeOnly("io.github.spair:imgui-java-natives-macos:$imgui_version"))
+    include(runtimeOnly("io.github.spair:imgui-java-natives-windows:$imgui_version"))
 }
 
 loom {
