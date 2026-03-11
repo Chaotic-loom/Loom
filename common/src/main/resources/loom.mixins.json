@@ -19,6 +19,7 @@
     "rendering.GameRendererMixin",
     "rendering.GuiMixin",
     "rendering.MinecraftMixin",
+    "rendering.MouseHandlerMixin",
     "rendering.ShaderInstanceMixin"
   ],
   "server": [],

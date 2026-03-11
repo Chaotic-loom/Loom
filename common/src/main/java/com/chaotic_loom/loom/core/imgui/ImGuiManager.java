@@ -10,19 +10,6 @@ import imgui.glfw.ImGuiImplGlfw;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
 
-/**
- * Manages the ImGui lifecycle: init, per-frame begin/end, dispose.
- *
- * Editor mode vs. HUD mode
- * ─────────────────────────
- * When editorMode = true:
- *   - Full EditorLayout is rendered (dockspace, menu bar, all panels).
- *   - ImGui captures mouse / keyboard input.
- *
- * When editorMode = false:
- *   - Only lightweight HUD windows (e.g. DebugWindows) are rendered.
- *   - ImGui does NOT capture input (Minecraft controls normally).
- */
 public class ImGuiManager {
 
     private static ImGuiImplGlfw imguiGlfw;
@@ -68,17 +55,8 @@ public class ImGuiManager {
     public static void endFrame() {
         ImGui.render();
 
-        // CRITICAL — unbind Minecraft's FBO before rendering ImGui.
-        //
-        // After the game renders, mainRenderTarget is still bound as the active
-        // GL framebuffer.  If renderDrawData() executes while it is bound, ImGui
-        // draws itself INTO the game texture.  The viewport panel then displays
-        // that texture, which contains ImGui, which displays the texture again —
-        // an infinite feedback loop that causes flickering, invalid colours, and
-        // a completely broken window.
-        //
-        // Binding framebuffer 0 (the real screen backbuffer) guarantees ImGui
-        // always composites onto the final output, never into any game FBO.
+        // Unbind Minecraft's FBO before rendering ImGui so it draws to the
+        // real screen backbuffer, not into the game texture.
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
         imguiGl3.renderDrawData(ImGui.getDrawData());

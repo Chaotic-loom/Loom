@@ -4,13 +4,18 @@ import com.chaotic_loom.loom.Constants;
 import com.chaotic_loom.loom.core.imgui.DebugWindows;
 import com.chaotic_loom.loom.core.imgui.ImGuiManager;
 import com.chaotic_loom.loom.core.imgui.editor.EditorLayout;
+import com.chaotic_loom.loom.core.imgui.editor.panels.ViewportPanel;
 import com.chaotic_loom.loom.core.rendering.shader.ShaderRegistrationCallback;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -60,6 +65,10 @@ import java.util.function.Consumer;
  */
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
+    @Shadow
+    @Final
+    private Minecraft minecraft;
+
     @Inject(method = "reloadShaders", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 0))
     private void registerShaders(ResourceProvider resourceProvider, CallbackInfo ci, @Local(ordinal = 1) List<Pair<ShaderInstance, Consumer<ShaderInstance>>> shaderPairList) throws IOException {
         Constants.LOG.info("[GameRendererMixin] reloadShaders called! Invoking ShaderRegistrationCallback");

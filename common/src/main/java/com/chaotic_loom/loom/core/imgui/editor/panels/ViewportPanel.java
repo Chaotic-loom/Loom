@@ -10,17 +10,25 @@ import net.minecraft.world.entity.player.Player;
 /**
  * Viewport panel – docked to the central node.
  *
- * The game renders normally into mc.getMainRenderTarget() every frame.
- * MixinMinecraft suppresses the blit-to-screen call so it doesn't appear
- * full-screen behind ImGui.  We then display the same FBO's colour texture
- * here via ImGui.image().
+ * The game renders at full window resolution. We display it letterboxed
+ * inside the panel to preserve aspect ratio.
  *
- * UV flip: OpenGL stores textures bottom-up; ImGui expects top-down.
- * uv0 = (0, 1), uv1 = (1, 0) corrects this.
+ * Static fields imageX/Y/W/H (in GLFW screen pixels) describe exactly where
+ * the game image sits on screen. MixinMouseHandler reads these each frame to
+ * remap raw GLFW mouse coordinates into the equivalent game-space coordinates,
+ * so Minecraft's input system sees the correct position regardless of panel size.
  */
 public class ViewportPanel extends EditorPanel {
 
     public static final String TITLE = "  Viewport";
+
+    // ── Image bounds in GLFW screen-pixel coordinates ─────────────────────────
+    // Updated every ImGui frame. Read by MixinMouseHandler.
+    // All zero until the panel has been displayed at least once.
+    public static float imageX = 0; // left edge of the displayed game image
+    public static float imageY = 0; // top  edge of the displayed game image
+    public static float imageW = 0; // width  of the displayed game image
+    public static float imageH = 0; // height of the displayed game image
 
     private int     activeTool = 0;
     private boolean showGrid   = true;
@@ -31,8 +39,8 @@ public class ViewportPanel extends EditorPanel {
 
     public ViewportPanel() {
         super(
-                ImGuiWindowFlags.NoScrollbar       |
-                        ImGuiWindowFlags.NoScrollWithMouse  |
+                ImGuiWindowFlags.NoScrollbar      |
+                        ImGuiWindowFlags.NoScrollWithMouse |
                         ImGuiWindowFlags.NoBackground
         );
     }
@@ -52,18 +60,41 @@ public class ViewportPanel extends EditorPanel {
         ImVec2 avail = ImGui.getContentRegionAvail();
         if (avail.x <= 0 || avail.y <= 0) return;
 
-        int texId = Minecraft.getInstance().getMainRenderTarget().getColorTextureId();
+        Minecraft mc  = Minecraft.getInstance();
+        float nativeW = mc.getWindow().getWidth();
+        float nativeH = mc.getWindow().getHeight();
+        if (nativeW <= 0 || nativeH <= 0) return;
 
-        // Flip Y: OpenGL textures are bottom-up, ImGui images are top-down.
-        ImGui.image(texId, avail.x, avail.y, 0f, 1f, 1f, 0f);
+        // Fit inside the panel preserving aspect ratio (letterbox / pillarbox)
+        float scale = Math.min(avail.x / nativeW, avail.y / nativeH);
+        float drawW = nativeW * scale;
+        float drawH = nativeH * scale;
+
+        // Centre inside available space
+        ImVec2 cursor     = ImGui.getCursorScreenPos(); // screen-pixel position
+        float  padX       = (avail.x - drawW) * 0.5f;
+        float  padY       = (avail.y - drawH) * 0.5f;
+        float  imgScreenX = cursor.x + padX;
+        float  imgScreenY = cursor.y + padY;
+
+        // Publish image bounds so MixinMouseHandler can remap mouse coords
+        imageX = imgScreenX;
+        imageY = imgScreenY;
+        imageW = drawW;
+        imageH = drawH;
+
+        // Advance cursor to the centred position then draw
+        ImVec2 cursorLocal = ImGui.getCursorPos();
+        ImGui.setCursorPos(cursorLocal.x + padX, cursorLocal.y + padY);
+
+        // UV flip: OpenGL bottom-up → ImGui top-down
+        ImGui.image(mc.getMainRenderTarget().getColorTextureId(),
+                drawW, drawH, 0f, 1f, 1f, 0f);
     }
 
     // ── Toolbar overlay ───────────────────────────────────────────────────────
-    // Drawn after the image so it sits on top of it.
-    // setCursorPos resets back to the top of the content area.
 
     private void renderToolbarOverlay() {
-        // Overlap back onto the top of the image
         ImGui.setCursorPos(0f, 0f);
 
         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.08f, 0.08f, 0.12f, 0.80f);
@@ -102,7 +133,6 @@ public class ViewportPanel extends EditorPanel {
         float[] tod = { timeOfDay };
         if (ImGui.sliderFloat("##tod", tod, 0f, 1f)) {
             timeOfDay = tod[0];
-            // TODO: apply to world time manager
         }
 
         ImGui.endChild();
