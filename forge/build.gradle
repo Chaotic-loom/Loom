@@ -1,20 +1,3 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        mavenCentral()
-    }
-    dependencies {
-        // Add it to the classpath
-        classpath 'net.minecraftforge:srgutils:0.5.11'
-    }
-    // Force Gradle to use this exact version across the entire buildscript
-    configurations.classpath {
-        resolutionStrategy {
-            force 'net.minecraftforge:srgutils:0.5.11'
-        }
-    }
-}
-
 plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'

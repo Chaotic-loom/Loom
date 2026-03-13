@@ -1,3 +1,11 @@
+buildscript {
+    configurations.classpath {
+        resolutionStrategy {
+            force 'net.minecraftforge:srgutils:0.6.2'
+        }
+    }
+}
+
 plugins {
     // fabric
     id 'fabric-loom' version '1.11-SNAPSHOT' apply false
@@ -11,10 +19,10 @@ plugins {
 }
 
 ext.compareVersions = { String a, String b ->
-    def sa = a.replaceAll('[^0-9.]','')
-    def sb = b.replaceAll('[^0-9.]','')
-    def pa = sa.tokenize('.').collect{ it.toInteger() }
-    def pb = sb.tokenize('.').collect{ it.toInteger() }
+    // Strip anything after a hyphen or non-numeric prefix first
+    def clean = { String v -> v.replaceAll(/-.*$/, '').replaceAll('[^0-9.]', '') }
+    def pa = clean(a).tokenize('.').collect { it.toInteger() }
+    def pb = clean(b).tokenize('.').collect { it.toInteger() }
     for (int i = 0; i < Math.max(pa.size(), pb.size()); i++) {
         int va = (i < pa.size()) ? pa[i] : 0
         int vb = (i < pb.size()) ? pb[i] : 0
